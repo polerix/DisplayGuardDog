@@ -146,25 +146,31 @@ func countSavedDisplays() -> Int? {
 
 let watchdogIconPointSize = NSSize(width: 18, height: 18)
 
-func loadWatchdogIcon(resourceName: String) -> NSImage {
+func loadWatchdogIcon(resourceName: String, template: Bool) -> NSImage {
     guard let url = Bundle.main.url(forResource: resourceName, withExtension: "png"),
           let image = NSImage(contentsOf: url) else {
         return NSImage(size: watchdogIconPointSize)
     }
     image.size = watchdogIconPointSize
-    image.isTemplate = false
+    // The menu bar art is pure black/transparent (no literal colors), which
+    // is exactly what a template image needs: AppKit repaints the opaque
+    // pixels using the current appearance's foreground color (black in a
+    // light menu bar, white in a dark one) and leaves transparent pixels
+    // alone. Without this, the black square would nearly vanish against a
+    // dark menu bar.
+    image.isTemplate = template
     return image
 }
 
-let watchdogIconOn = loadWatchdogIcon(resourceName: "WatchDog_ON")
-let watchdogIconOff = loadWatchdogIcon(resourceName: "WatchDog_OFF")
+let watchdogIconOn = loadWatchdogIcon(resourceName: "WatchDog_ON", template: true)
+let watchdogIconOff = loadWatchdogIcon(resourceName: "WatchDog_OFF", template: true)
 
 func makeWatchdogIcon(active: Bool) -> NSImage {
     active ? watchdogIconOn : watchdogIconOff
 }
 
 let watchdogNotifyIcon: NSImage = {
-    let image = loadWatchdogIcon(resourceName: "WatchDog_Notify")
+    let image = loadWatchdogIcon(resourceName: "WatchDog_Notify", template: false)
     image.size = NSSize(width: 64, height: 64)
     return image
 }()
