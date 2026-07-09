@@ -40,8 +40,8 @@ update what "correct" means, and surfaces what the daemon has been doing.
 ## Install
 
 ```
-git clone <this repo>
-cd DisplayWatchdogToggle
+git clone https://github.com/polerix/DisplayGuardDog.git
+cd DisplayGuardDog
 ./install.sh
 ```
 
